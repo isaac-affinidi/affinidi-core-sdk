@@ -52,7 +52,7 @@ const credentialShareRequestToken =
   '50b739ac0e5eb4add1961c88d9f0486b37be928bccf2b19fb5a1d2b7c9bbe'
 
 // test against `dev | prod` // if nothing specified, staging is used by default
-const options: __dangerous.SdkOptions = getOptionsForEnvironment()
+const options: __dangerous.SdkOptions = getOptionsForEnvironment('dev')
 
 describe('AffinityWallet', () => {
   it('.init returns SDK instance, initialize with default environment', async () => {
@@ -105,8 +105,20 @@ describe('AffinityWallet', () => {
     expect(token).to.exist
   })
 
-  it.skip('#saveCredentials', async () => {
-    const affinityWallet = await AffinityWallet.fromLoginAndPassword(cognitoUsername, cognitoPassword, options)
+  it.only('#saveCredentials in Singapore', async () => {
+    const storageRegion = 'SGP'
+    const affinityWallet = await AffinityWallet.fromLoginAndPassword(cognitoUsername, cognitoPassword, { ...options, storageRegion })
+
+    const results = await affinityWallet.saveCredentials([signedCredential])
+
+    expect(results).to.exist
+    expect(results[0].id).to.exist
+  })
+
+  it.only('#saveCredentials in India', async () => {
+    console.log(cognitoUsername, cognitoPassword)
+    const storageRegion = 'IND'
+    const affinityWallet = await AffinityWallet.fromLoginAndPassword(cognitoUsername, cognitoPassword, { ...options, storageRegion })
 
     const results = await affinityWallet.saveCredentials([signedCredential])
 
